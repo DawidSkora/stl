@@ -1,14 +1,20 @@
+#include <algorithm>
 #include <string>
 #include <vector>
 
 #include "vowel.hpp"
 
+std::vector<char> vowels = {'a', 'e', 'i', 'o', 'u', 'y'};
+
 void removeVowels(std::vector<std::string>& v) {
     for (auto& word : v) {
-        word.erase(std::remove_if(word.begin(), word.end(), [](char x) {
-                       return x == 'a' || x == 'e' || x == 'o' || x == 'u' || x == 'i' || x == 'y' ||
-                              x == 'A' || x == 'E' || x == 'O' || x == 'U' || x == 'I' || x == 'Y';
-                   }),
-                   word.end());
+        auto it_word = word.begin();
+        while (it_word != word.end()) {
+            if (std::find(vowels.begin(), vowels.end(), std::tolower(*it_word)) != vowels.end()) {
+                word.erase(it_word);
+            } else {
+                std::advance(it_word, 1);
+            }
+        }
     }
 }
