@@ -1,4 +1,5 @@
 #include <array>
+#include <iostream>
 #include <utility>
 #include <vector>
 
@@ -8,18 +9,24 @@ std::vector<std::pair<uint8_t, uint8_t>> compressGrayscale(std::array<std::array
     std::vector<std::pair<uint8_t, uint8_t>> vec = {};
     uint8_t last_value = bitMap[0][0];
     uint8_t repeats = 0;
+    bool new_line = true;
     for (auto& bitRow : bitMap) {
         for (auto& bit : bitRow) {
-            if (last_value == bit) {
-                repeats++;
-            } else {
-                vec.emplace_back(last_value, repeats);
-                repeats = 1;
+            if (last_value != bit) {
+                if (!new_line) {
+                    vec.emplace_back(last_value, repeats);
+                }
+                repeats = 0;
                 last_value = bit;
             }
+            new_line = false;
+            repeats++;
         }
+
+        vec.emplace_back(last_value, repeats);
+        repeats = 0;
+        new_line = true;
     }
-    vec.emplace_back(last_value, repeats);
     return vec;
 }
 
@@ -40,4 +47,13 @@ std::array<std::array<uint8_t, height>, width> decompressGrayscale(std::vector<s
         }
     }
     return out_arr;
+}
+
+void printMap(std::array<std::array<uint8_t, height>, width>& arr) {
+    for (auto& bitRow : arr) {
+        for (auto& bit : bitRow) {
+            std::cout << bit;
+        }
+        std::cout << std::endl;
+    }
 }
